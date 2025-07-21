@@ -2,8 +2,6 @@ import {
     Box,
     Typography,
     IconButton,
-    useMediaQuery,
-    useTheme,
 } from '@mui/material';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { useRef } from 'react';
@@ -15,9 +13,6 @@ interface Props {
 
 const HorizontalListSection = ({ title, children }: Props) => {
     const scrollRef = useRef<HTMLDivElement>(null);
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
     const scrollBy = 220; // adjust for card width + gap
 
     const handleScroll = (direction: 'left' | 'right') => {
