@@ -1,0 +1,12 @@
+{
+  "title": "Boîte de Popcorn",
+  "favorites": "Favoris",
+  "search": "Rechercher des films",
+  "noResults": "Aucun film trouvé",
+  "homePage": {
+    "title": "Moments forts du Popcorn",
+    "top10ThisWeek": "Top 10 de la semaine",
+    "fanFavorites": "Favoris des fans",
+    "comingSoonToTheatres": "Bientôt dans les cinémas"
+  }
+}

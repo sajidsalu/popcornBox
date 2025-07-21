@@ -1,0 +1,12 @@
+{
+    "title": "Caja de Palomitas",
+    "favorites": "Favoritos",
+    "search": "Buscar películas",
+    "noResults": "No se encontraron películas",
+    "homePage": {
+        "title": "Destacados de Palomitas",
+        "top10ThisWeek": "Top 10 de esta semana",
+        "fanFavorites": "Favoritos de los fans",
+        "comingSoonToTheatres": "Próximamente en cines"
+    }
+}

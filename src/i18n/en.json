@@ -1,0 +1,12 @@
+{
+    "title": "Popcorn Box",
+    "favorites": "Favorites",
+    "search": "Search Movies",
+    "noResults": "No movies found",
+    "homePage": {
+        "title": " Popcorn Highlights",
+        "top10ThisWeek": "Top 10 this week",
+        "fanFavorites": "Fan favorites",
+        "comingSoonToTheatres": "Coming soon to theatres"
+    }
+}
