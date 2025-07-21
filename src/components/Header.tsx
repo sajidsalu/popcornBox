@@ -13,23 +13,22 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import { Brightness4, Brightness7, ExpandMore } from '@mui/icons-material';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '../store/themeSlice';
 import type { RootState } from '../store/store';
 import { useTranslation } from 'react-i18next';
 import logo from '../assets/popcorn.png';
 
-
 const Header = () => {
   const mode = useSelector((state: RootState) => state.theme.mode);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { t, i18n } = useTranslation();
   const [showLangOptions, setShowLangOptions] = useState(false);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
-  // const [langAnchorEl, setLangAnchorEl] = useState<null | HTMLElement>(null);
-
   const currentLang = i18n.language;
 
   const toggleDrawer = (open: boolean) => () => setDrawerOpen(open);
@@ -37,9 +36,18 @@ const Header = () => {
   const handleLanguageChange = (lang: string) => {
     i18n.changeLanguage(lang);
     localStorage.setItem('preferredLanguage', lang);
-    setDrawerOpen(false); // 👈 closes drawer too
+    setDrawerOpen(false);
   };
 
+  const handleMenuClick = (route: string) => {
+    if (route === "Movies") {
+      navigate("/");
+    }
+    else if (route === "TV Shows") {
+      navigate("/tv");
+    }
+    toggleDrawer(false);
+  };
 
   return (
     <>
@@ -79,12 +87,11 @@ const Header = () => {
         </Toolbar>
       </AppBar>
 
-      {/* Sidebar Drawer */}
       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
         <Box sx={{ width: 250 }} role="presentation">
           <List>
             {['Movies', 'TV Shows', 'Watch'].map((text) => (
-              <ListItem key={text} onClick={toggleDrawer(false)}>
+              <ListItem key={text} onClick={() => handleMenuClick(text)}>
                 <ListItemText primary={text} />
               </ListItem>
             ))}

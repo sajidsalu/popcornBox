@@ -13,7 +13,7 @@ interface Props {
 
 const HorizontalListSection = ({ title, children }: Props) => {
     const scrollRef = useRef<HTMLDivElement>(null);
-    const scrollBy = 220; // adjust for card width + gap
+    const scrollBy = 220;
 
     const handleScroll = (direction: 'left' | 'right') => {
         if (scrollRef.current) {
@@ -30,7 +30,6 @@ const HorizontalListSection = ({ title, children }: Props) => {
                 <Typography variant="h5" fontWeight={600}>
                     {title}
                 </Typography>
-                {/* {!isMobile && ( */}
                 <Box>
                     <IconButton onClick={() => handleScroll('left')}>
                         <ChevronLeft />
@@ -39,7 +38,6 @@ const HorizontalListSection = ({ title, children }: Props) => {
                         <ChevronRight />
                     </IconButton>
                 </Box>
-                {/* )} */}
             </Box>
 
             <Box
@@ -56,10 +54,25 @@ const HorizontalListSection = ({ title, children }: Props) => {
                         scrollSnapAlign: 'start',
                         flexShrink: 0,
                     },
-                    '&::-webkit-scrollbar': { height: 6 },
-                    '&::-webkit-scrollbar-thumb': {
-                        backgroundColor: '#aaa',
-                        borderRadius: 3,
+
+                    // Hide scrollbar by default
+                    scrollbarWidth: 'none', // Firefox
+                    msOverflowStyle: 'none', // IE/Edge
+                    '&::-webkit-scrollbar': {
+                        display: 'none', // Chrome/Safari/Edge
+                    },
+
+                    // Show scrollbar on hover
+                    '&:hover': {
+                        scrollbarWidth: 'thin', // Firefox
+                        '&::-webkit-scrollbar': {
+                            display: 'block',
+                            height: 6,
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                            backgroundColor: '#999',
+                            borderRadius: 3,
+                        },
                     },
                 }}
             >
