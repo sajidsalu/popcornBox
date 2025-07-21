@@ -1,4 +1,5 @@
 🍿 PopcornBox
+
 PopcornBox is a movie and TV show listing application built with React, TypeScript, and Vite. It features real-time data from the TMDB API, internationalization, dark/light themes, accessibility, and responsive design.
 
 🚀 Tech Stack
@@ -101,3 +102,8 @@ Copy
 Edit
 VITE_API_URL=https://api.themoviedb.org/3
 VITE_API_KEY=your_tmdb_api_key
+
+
+
+<img width="1843" height="1093" alt="Screenshot from 2025-07-21 19-12-06" src="https://github.com/user-attachments/assets/4fd3b72d-e72c-4c97-8778-74a9bf2ccc34" />
+<img width="1843" height="1093" alt="Screenshot from 2025-07-21 19-11-55" src="https://github.com/user-attachments/assets/cdaf3796-2671-49e6-963a-bfafb6b4010e" />
