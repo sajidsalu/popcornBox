@@ -1,70 +1,103 @@
-# React + TypeScript + Vite
+🍿 PopcornBox
+PopcornBox is a movie and TV show listing application built with React, TypeScript, and Vite. It features real-time data from the TMDB API, internationalization, dark/light themes, accessibility, and responsive design.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🚀 Tech Stack
+React + TypeScript
 
-Currently, two official plugins are available:
+Vite (super fast dev server)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+React Query for API state
 
-## Expanding the ESLint configuration
+Redux Toolkit for global state (theme, favorites)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Material UI for modern responsive UI
 
-```js
+React Router DOM for routing
+
+i18next for internationalization (i18n)
+
+Jest (for future unit tests)
+
+TMDB API for fetching movie and TV data
+
+🔧 Features
+🎬 Movie & TV show listing with categories:
+
+Top 10 this week
+
+Fan favorites
+
+Coming soon
+
+💡 Toggle between light and dark theme
+
+🔍 Search with instant feedback
+
+❤️ Add/remove favorites (persistent)
+
+🌐 Multi-language support: English 🇺🇸, French 🇫🇷, Spanish 🇪🇸
+
+🧭 Sidebar with navigation and language selector
+
+📱 Fully responsive with scrollable horizontal lists
+
+🧪 ESLint with type-aware rules & React best practices
+
+🛠️ Development Setup
+bash
+Copy
+Edit
+# 1. Install dependencies
+npm install
+
+# 2. Start the dev server
+npm run dev
+
+# 3. Build for production
+npm run build
+
+# 4. Preview production build locally
+npm run preview
+📦 ESLint Setup (optional advanced)
+To enable type-aware linting, you can use:
+
+ts
+Copy
+Edit
 export default tseslint.config([
   globalIgnores(['dist']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
       ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
       ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
       ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
     ],
     languageOptions: {
       parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        project: ['./tsconfig.app.json', './tsconfig.node.json'],
         tsconfigRootDir: import.meta.dirname,
       },
-      // other options...
     },
   },
 ])
-```
+Add React-specific linting with:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
+ts
+Copy
+Edit
 import reactX from 'eslint-plugin-react-x'
 import reactDom from 'eslint-plugin-react-dom'
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-# popcornBox
+extends: [
+  reactX.configs['recommended-typescript'],
+  reactDom.configs.recommended,
+]
+🌍 Environment Variables
+To run in production (e.g., Vercel/Netlify), make sure to set:
+
+ini
+Copy
+Edit
+VITE_API_URL=https://api.themoviedb.org/3
+VITE_API_KEY=your_tmdb_api_key
