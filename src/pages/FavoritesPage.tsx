@@ -18,9 +18,9 @@ const FavoritesPage = () => {
         <Typography>{t('noResults')}</Typography>
       ) : (
         <Grid container spacing={2}>
-          {favorites.map((movie) => (
+          {favorites.map((movie, index) => (
             <Grid key={movie.id}>
-              <MovieCard movie={movie} />
+              <MovieCard movie={movie} rank={index} />
             </Grid>
           ))}
         </Grid>

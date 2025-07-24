@@ -10,13 +10,12 @@ import {
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { getMovieById } from '../api/movieService';
+import { getMovieById, getMovieTrailer } from '../api/movieService';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../store/store';
 import { addFavorite, removeFavorite } from '../store/favoritesSlice';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PopcornLoader from '../components/Loader/Loader';
-import WatchTrailerButton from '../components/WatchTrailerButton';
 
 const MovieDetails = () => {
   const { id } = useParams();
@@ -32,7 +31,17 @@ const MovieDetails = () => {
     queryFn: () => getMovieById(movieId),
   });
 
-  console.log("movie", movie);
+  const { data: trailers = [] } = useQuery({
+    queryKey: ['trailer', movieId],
+    queryFn: () => getMovieTrailer(movieId.toString()),
+  });
+
+  const trailer = trailers?.find(
+    (v: any) => v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser')
+  );
+
+  const trailerUrl = trailer ? `https://www.youtube.com/embed/${trailer.key}` : null;
+
   const handleToggleFavorite = () => {
     if (!movie) return;
     isFavorite ? dispatch(removeFavorite(movie.id)) : dispatch(addFavorite(movie));
@@ -52,51 +61,86 @@ const MovieDetails = () => {
           <ArrowBackIcon />
         </IconButton>
 
-        {/* Top section: poster + details */}
-        <Box display="flex" gap={4} flexWrap="wrap">
+        {/* Top section: poster + trailer */}
+        <Box display="flex" flexWrap="wrap" gap={4}>
           <Box>
             <img src={posterUrl} alt={movie.title} width={250} style={{ borderRadius: 12 }} />
           </Box>
 
-          <Box flex="1">
-            <Typography variant="h3" gutterBottom color="primary.main">{movie.title}</Typography>
-            <Stack direction="row" spacing={1} alignItems="center" mb={1}>
-              <Typography variant="subtitle1" color="primary.main">
-                {movie.release_date?.split('-')[0]} • {movie.runtime} min • ⭐ {movie.vote_average.toFixed(1)}
-              </Typography>
-            </Stack>
-
-            <Stack direction="row" spacing={1} flexWrap="wrap" mb={2}>
-              {movie.genres?.map((genre: any) => (
-                <Chip
-                  key={genre.id}
-                  label={genre.name}
-                  size="small"
-                  sx={{ backgroundColor: '#333', color: '#fff' }}
-                />
-              ))}
-            </Stack>
-
-            <Typography variant="body1" mb={2} color="primary.main">{movie.overview}</Typography>
-
-            <Stack direction="row" spacing={2} flexWrap="wrap">
-              <WatchTrailerButton movieId={String(movie.id)} />
-
-              <Button
-                variant={isFavorite ? 'outlined' : 'contained'}
-                onClick={handleToggleFavorite}
-                sx={{ textTransform: 'none' }}
+          <Box flex="1" minWidth={300}>
+            {trailerUrl ? (
+              <Box
+                sx={{
+                  position: 'relative',
+                  paddingTop: '56.25%', // 16:9 aspect ratio
+                  borderRadius: 2,
+                  overflow: 'hidden',
+                }}
               >
-                {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
-              </Button>
-            </Stack>
+                <iframe
+                  src={trailerUrl}
+                  title="Trailer"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: 8,
+                  }}
+                />
+              </Box>
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                Trailer not available.
+              </Typography>
+            )}
           </Box>
         </Box>
 
-        <Divider sx={{ my: 4, backgroundColor: '#333' }} />
+        {/* Details below */}
+        <Box mt={4}>
+          <Typography variant="h3" gutterBottom color="primary.main">
+            {movie.title}
+          </Typography>
 
-        {/* Crew Info */}
-        <Box>
+          <Stack direction="row" spacing={1} alignItems="center" mb={1}>
+            <Typography variant="subtitle1" color="primary.main">
+              {movie.release_date?.split('-')[0]} • {movie.runtime} min • ⭐ {movie.vote_average.toFixed(1)}
+            </Typography>
+          </Stack>
+
+          <Stack direction="row" spacing={1} flexWrap="wrap" mb={2}>
+            {movie.genres?.map((genre: any) => (
+              <Chip
+                key={genre.id}
+                label={genre.name}
+                size="small"
+                sx={{ backgroundColor: '#333', color: '#fff' }}
+              />
+            ))}
+          </Stack>
+
+          <Typography variant="body1" mb={2} color="primary.main">
+            {movie.overview}
+          </Typography>
+
+          <Stack direction="row" spacing={2} flexWrap="wrap" mb={4}>
+            <Button
+              variant={isFavorite ? 'outlined' : 'contained'}
+              onClick={handleToggleFavorite}
+              sx={{ textTransform: 'none' }}
+            >
+              {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+            </Button>
+          </Stack>
+
+          <Divider sx={{ my: 4, backgroundColor: '#333' }} />
+
+          {/* Crew Info */}
           {movie.director && (
             <Typography variant="body2" sx={{ mb: 1 }}>
               <strong>Director:</strong> {movie.director}

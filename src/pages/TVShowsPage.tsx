@@ -1,12 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { Box, Typography } from '@mui/material';
 import HorizontalListSection from '../components/HorizontalList';
-import { useTranslation } from 'react-i18next';
 import { fetchPopularTvShows, fetchTopRatedTvShows, fetchAiringTodayTv } from '../api/tvService';
 import TVShowCard, { type TVShow } from '../components/TVShow';
 
 const TvShowsPage = () => {
-    const { t } = useTranslation();
 
     const { data: popular = [] } = useQuery({
         queryKey: ['popularTv'],
