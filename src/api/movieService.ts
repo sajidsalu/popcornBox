@@ -57,3 +57,10 @@ export const fetchPopularPeople = async () => {
   });
   return response.data.results;
 };
+
+export const getMovieTrailer = async (movieId: string) => {
+  const response = await axios.get(
+    `${BASE_URL}/movie/${movieId}/videos?api_key=${apiKey}`
+  );
+  return response.data.results;
+};

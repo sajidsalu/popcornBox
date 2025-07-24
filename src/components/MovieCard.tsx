@@ -1,22 +1,27 @@
-import { Card, CardMedia, CardContent, Typography } from '@mui/material';
+import { Card, CardMedia, CardContent, Typography, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import type { Movie } from '../types/movie.type';
+import { Star } from '@mui/icons-material';
+import WatchTrailerButton from './WatchTrailerButton';
 
 interface Props {
     movie: Movie;
+    rank: number;
 }
 
-const MovieCard = ({ movie }: Props) => {
+const MovieCard = ({ movie, rank }: Props) => {
     const imageUrl = movie.poster_path
         ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
         : 'https://via.placeholder.com/500x750?text=No+Image';
+
+    const rating = movie.vote_average?.toFixed(1);
 
     return (
         <Link to={`/movie/${movie.id}`} style={{ textDecoration: 'none' }}>
             <Card
                 sx={{
-                    width: 200,
-                    height: 360,
+                    width: 220,
+                    height: 400,
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
@@ -33,27 +38,31 @@ const MovieCard = ({ movie }: Props) => {
                     sx={{ objectFit: 'cover' }}
                 />
 
-                <CardContent sx={{ p: 1 }}>
+                <CardContent sx={{ p: 1, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <Star sx={{ color: '#f5c518', fontSize: 18 }} />
+                        <Typography variant="body2" fontWeight={500}>
+                            {rating}
+                        </Typography>
+                    </Box>
+
                     <Typography
-                        variant="subtitle1"
+                        variant="subtitle2"
                         fontWeight={600}
                         sx={{
-                            fontSize: '0.95rem',
+                            fontSize: '0.9rem',
                             lineHeight: 1.2,
                             display: '-webkit-box',
-                            WebkitLineClamp: 2, // limit to 2 lines
+                            WebkitLineClamp: 2,
                             WebkitBoxOrient: 'vertical',
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
-                            height: 40, // reserve space for 2 lines
                         }}
                     >
-                        {movie.title}
+                        {rank ? `${rank}. ${movie.title}` : movie.title}
                     </Typography>
 
-                    <Typography variant="body2" color="text.secondary">
-                        {movie.release_date?.split('-')[0]}
-                    </Typography>
+                    <WatchTrailerButton movieId={movie.id.toString()} />
                 </CardContent>
             </Card>
         </Link>

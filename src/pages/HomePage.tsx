@@ -34,20 +34,20 @@ const HomePage = () => {
             </Typography>
 
             <HorizontalListSection title={t("homePage.top10ThisWeek")}>
-                {trending.map((movie) => (
-                    <MovieCard key={movie.id} movie={movie} />
+                {trending?.map((movie: Movie, index: number) => (
+                    <MovieCard key={movie.id} movie={movie} rank={index + 1} />
                 ))}
             </HorizontalListSection>
 
             <HorizontalListSection title={t("homePage.fanFavorites")}>
-                {fanFavorites.map((movie: Movie) => (
-                    <MovieCard key={movie.id} movie={movie} />
+                {fanFavorites?.map((movie: Movie, index: number) => (
+                    <MovieCard key={movie.id} movie={movie} rank={index + 1} />
                 ))}
             </HorizontalListSection>
 
             <HorizontalListSection title={t("homePage.comingSoonToTheatres")}>
-                {comingSoon.map((movie: Movie) => (
-                    <MovieCard key={movie.id} movie={movie} />
+                {comingSoon?.map((movie: Movie, index: number) => (
+                    <MovieCard key={movie.id} movie={movie} rank={index + 1} />
                 ))}
             </HorizontalListSection>
         </Box>
