@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { TVShow } from '../components/TVShow';
+import type { TVShowDetails } from '../types/show.type';
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -17,4 +18,14 @@ export const fetchTopRatedTvShows = async (): Promise<TVShow[]> => {
 export const fetchAiringTodayTv = async (): Promise<TVShow[]> => {
     const res = await axios.get(`${BASE_URL}/tv/airing_today?api_key=${API_KEY}&language=en-US`);
     return res.data.results;
+};
+
+export const fetchTvShowDetails = async (id: string): Promise<TVShowDetails> => {
+    const res = await axios.get(`${BASE_URL}/tv/${id}`, {
+        params: {
+            api_key: API_KEY,
+            language: 'en-US',
+        },
+    });
+    return res.data;
 };

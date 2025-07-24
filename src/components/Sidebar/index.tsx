@@ -79,7 +79,9 @@ const Sidebar = (props: SidebarProps) => {
             <Box sx={{ width: 250 }} role="presentation">
                 <List>
                     {['Movies', 'TV Shows', 'Watch'].map((text) => (
-                        <ListItem key={text} onClick={() => handleMenuClick(text)}>
+                        <ListItem key={text} sx={{
+                            cursor: "pointer",
+                        }} onClick={() => handleMenuClick(text)}>
                             <ListItemText primary={text} />
                         </ListItem>
                     ))}

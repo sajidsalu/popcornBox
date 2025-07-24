@@ -5,6 +5,7 @@ import FavoritesPage from "./pages/FavoritesPage";
 import Header from "./components/Header";
 import { Box } from "@mui/material";
 import TvShowsPage from "./pages/TVShowsPage";
+import TvShowDetailsPage from "./pages/TVShowDetails";
 
 const App = () => {
   return (
@@ -17,6 +18,8 @@ const App = () => {
             <Route path="/movie/:id" element={<MovieDetails />} />
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/tv" element={<TvShowsPage />} />
+            <Route path="/tv/:id" element={<TvShowDetailsPage />} />
+
           </Routes>
         </Box>
       </Box>
