@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -10,37 +10,40 @@ import {
   Rating,
   Stack,
   Typography,
-} from '@mui/material';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+} from "@mui/material";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import {
   fetchMovieCredits,
   fetchMovieRecommendations,
   fetchMovieWatchProviders,
   getMovieById,
   getMovieTrailer,
-} from '../../api/movieService';
-import SeriesCastCarousel from '../../components/tv-details/SeriesCastCarousel';
-import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '../../store/store';
-import { addFavorite, removeFavorite } from '../../store/favoritesSlice';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import AddIcon from '@mui/icons-material/Add';
-import StarRoundedIcon from '@mui/icons-material/StarRounded';
-import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
-import PopcornLoader from '../../components/Loader/Loader';
-import { useTranslation } from 'react-i18next';
-import { layoutTokens } from '../../theme/layoutTokens';
-import { backdropUrl, logoUrl, posterUrl } from '../../lib/mediaUrls';
-import type { Movie } from '../../types/movie.type';
-import { formatUsdCompact, getUsCertification } from '../../utils/movieDetailHelpers';
-import { movieDetailDark } from './movieDetailDarkUi';
+} from "../../api/movieService";
+import SeriesCastCarousel from "../../components/tv-details/SeriesCastCarousel";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
+import { addFavorite, removeFavorite } from "../../store/favoritesSlice";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import AddIcon from "@mui/icons-material/Add";
+import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
+import PopcornLoader from "../../components/Loader/Loader";
+import { useTranslation } from "react-i18next";
+import { layoutTokens } from "../../theme/layoutTokens";
+import { backdropUrl, logoUrl, posterUrl } from "../../lib/mediaUrls";
+import type { Movie } from "../../types/movie.type";
+import {
+  formatUsdCompact,
+  getUsCertification,
+} from "../../utils/movieDetailHelpers";
+import { movieDetailDark } from "./movieDetailDarkUi";
 
-const MOVIE_RATING_STORAGE = 'popcorn_movie_user_ratings';
+const MOVIE_RATING_STORAGE = "popcorn_movie_user_ratings";
 
 type TrailerVideo = { site: string; type: string; key: string };
 
@@ -68,7 +71,7 @@ function readStoredRating(movieId: number): number | null {
     if (!raw) return null;
     const map = JSON.parse(raw) as Record<string, number>;
     const v = map[String(movieId)];
-    return typeof v === 'number' && v >= 1 && v <= 5 ? v : null;
+    return typeof v === "number" && v >= 1 && v <= 5 ? v : null;
   } catch {
     return null;
   }
@@ -87,7 +90,7 @@ function writeStoredRating(movieId: number, value: number) {
 
 const MovieDetails = () => {
   const { id } = useParams();
-  const movieId = parseInt(id || '0');
+  const movieId = parseInt(id || "0");
   const navigate = useNavigate();
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -98,30 +101,34 @@ const MovieDetails = () => {
   const [userRating, setUserRating] = useState<number | null>(null);
   const [ratingDraft, setRatingDraft] = useState<number | null>(null);
 
-  const { data: movie, isLoading, isError } = useQuery({
-    queryKey: ['movie', movieId],
+  const {
+    data: movie,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["movie", movieId],
     queryFn: () => getMovieById(movieId) as Promise<MovieApi>,
   });
 
   const { data: trailers = [] } = useQuery({
-    queryKey: ['trailer', movieId],
+    queryKey: ["trailer", movieId],
     queryFn: () => getMovieTrailer(movieId.toString()),
   });
 
   const { data: movieCredits } = useQuery({
-    queryKey: ['movieCredits', movieId],
+    queryKey: ["movieCredits", movieId],
     queryFn: () => fetchMovieCredits(movieId),
     enabled: movieId > 0,
   });
 
   const { data: watchProviders } = useQuery({
-    queryKey: ['watchProviders', movieId],
+    queryKey: ["watchProviders", movieId],
     queryFn: () => fetchMovieWatchProviders(movieId),
     enabled: movieId > 0,
   });
 
   const { data: similar = [] } = useQuery({
-    queryKey: ['movieSimilar', movieId],
+    queryKey: ["movieSimilar", movieId],
     queryFn: () => fetchMovieRecommendations(movieId),
     enabled: movieId > 0,
   });
@@ -134,16 +141,19 @@ const MovieDetails = () => {
   }, [movieId]);
 
   const trailer = (trailers as TrailerVideo[]).find(
-    (v) => v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser'),
+    (v) =>
+      v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser"),
   );
-  const trailerWatchUrl = trailer ? `https://www.youtube.com/watch?v=${trailer.key}` : null;
+  const trailerWatchUrl = trailer
+    ? `https://www.youtube.com/watch?v=${trailer.key}`
+    : null;
 
   const directors = useMemo(() => {
     const crew = movieCredits?.crew ?? [];
     const seen = new Set<string>();
     const names: string[] = [];
     for (const c of crew) {
-      if (c.job !== 'Director') continue;
+      if (c.job !== "Director") continue;
       if (!seen.has(c.name)) {
         seen.add(c.name);
         names.push(c.name);
@@ -154,7 +164,7 @@ const MovieDetails = () => {
 
   const writers = useMemo(() => {
     const crew = movieCredits?.crew ?? [];
-    const jobs = new Set(['Screenplay', 'Writer', 'Story']);
+    const jobs = new Set(["Screenplay", "Writer", "Story"]);
     const seen = new Set<string>();
     const names: string[] = [];
     for (const c of crew) {
@@ -168,8 +178,8 @@ const MovieDetails = () => {
   }, [movieCredits]);
 
   const studioNames = useMemo(() => {
-    if (!movie?.production_companies?.length) return '';
-    return movie.production_companies.map((c) => c.name).join(', ');
+    if (!movie?.production_companies?.length) return "";
+    return movie.production_companies.map((c) => c.name).join(", ");
   }, [movie]);
 
   const handleToggleFavorite = () => {
@@ -177,7 +187,7 @@ const MovieDetails = () => {
     const fav: Movie = {
       id: movie.id,
       title: movie.title,
-      poster_path: movie.poster_path ?? '',
+      poster_path: movie.poster_path ?? "",
       overview: movie.overview,
       release_date: movie.release_date,
       vote_average: movie.vote_average,
@@ -212,19 +222,19 @@ const MovieDetails = () => {
   if (isError || !movie) {
     return (
       <Box sx={{ p: 4, bgcolor: movieDetailDark.bg }}>
-        <Typography color="error">{t('movieDetail.loadError')}</Typography>
+        <Typography color="error">{t("movieDetail.loadError")}</Typography>
       </Box>
     );
   }
 
   const backdrop =
-    backdropUrl(movie.backdrop_path ?? null, 'w1280') ??
-    posterUrl(movie.poster_path ?? null, 'w780');
+    backdropUrl(movie.backdrop_path ?? null, "w1280") ??
+    posterUrl(movie.poster_path ?? null, "w185");
 
-  const year = movie.release_date?.slice(0, 4) ?? '—';
+  const year = movie.release_date?.slice(0, 4) ?? "—";
   const runtimeMin = movie.runtime && movie.runtime > 0 ? movie.runtime : null;
   const genreMeta =
-    movie.genres?.map((g) => g.name.toUpperCase()).join(' • ') ?? '';
+    movie.genres?.map((g) => g.name.toUpperCase()).join(" • ") ?? "";
   const usCert = getUsCertification(movie.release_dates);
 
   const usWatch = watchProviders?.results?.US;
@@ -240,61 +250,89 @@ const MovieDetails = () => {
   const ratedLocked = userRating != null;
 
   return (
-    <Box sx={{ bgcolor: movieDetailDark.bg, minHeight: '100%', color: movieDetailDark.text, pb: 6 }}>
+    <Box
+      sx={{
+        bgcolor: movieDetailDark.bg,
+        minHeight: "100%",
+        color: movieDetailDark.text,
+        pb: 6,
+      }}
+    >
       {/* Hero */}
-      <Box sx={{ position: 'relative', minHeight: { xs: 420, md: 520 } }}>
+      <Box sx={{ position: "relative", minHeight: { xs: 420, md: 520 } }}>
         <Box
           component="img"
           src={backdrop}
           alt=""
           sx={{
-            position: 'absolute',
+            position: "absolute",
             inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
           }}
         />
         <Box
           sx={{
-            position: 'absolute',
+            position: "absolute",
             inset: 0,
             background: movieDetailDark.heroOverlay,
           }}
         />
-        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1, pt: 2, pb: { xs: 6, md: 8 }, px: { xs: 2, md: 3 } }}>
+        <Container
+          maxWidth="lg"
+          sx={{
+            position: "relative",
+            zIndex: 1,
+            pt: 2,
+            pb: { xs: 6, md: 8 },
+            px: { xs: 2, md: 3 },
+          }}
+        >
           <IconButton
             onClick={() => navigate(-1)}
-            aria-label={t('common.back')}
+            aria-label={t("common.back")}
             sx={{
               mb: 2,
-              color: '#fff',
-              bgcolor: 'rgba(255,255,255,0.08)',
-              '&:hover': { bgcolor: 'rgba(255,255,255,0.16)' },
+              color: "#fff",
+              bgcolor: "rgba(255,255,255,0.08)",
+              "&:hover": { bgcolor: "rgba(255,255,255,0.16)" },
             }}
           >
             <ArrowBackIcon />
           </IconButton>
 
-          <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1.5} sx={{ mb: 2 }}>
+          <Stack
+            direction="row"
+            flexWrap="wrap"
+            alignItems="center"
+            gap={1.5}
+            sx={{ mb: 2 }}
+          >
             {movie.vote_average >= 8 && (
               <Chip
-                label={t('movieDetail.featured')}
+                label={t("movieDetail.featured")}
                 size="small"
                 sx={{
-                  bgcolor: 'rgba(45, 212, 191, 0.25)',
-                  color: '#5eead4',
+                  bgcolor: "rgba(45, 212, 191, 0.25)",
+                  color: "#5eead4",
                   fontWeight: 900,
-                  letterSpacing: '0.12em',
-                  border: '1px solid rgba(45, 212, 191, 0.45)',
+                  letterSpacing: "0.12em",
+                  border: "1px solid rgba(45, 212, 191, 0.45)",
                 }}
               />
             )}
             <Stack direction="row" alignItems="center" spacing={0.5}>
-              <StarRoundedIcon sx={{ color: '#fbbf24', fontSize: 26 }} />
-              <Typography fontWeight={800} sx={{ color: '#fff', fontSize: '1.1rem' }}>
+              <StarRoundedIcon sx={{ color: "#fbbf24", fontSize: 26 }} />
+              <Typography
+                fontWeight={800}
+                sx={{ color: "#fff", fontSize: "1.1rem" }}
+              >
                 {movie.vote_average.toFixed(1)}
-                <Typography component="span" sx={{ color: 'rgba(255,255,255,0.65)', fontWeight: 600 }}>
+                <Typography
+                  component="span"
+                  sx={{ color: "rgba(255,255,255,0.65)", fontWeight: 600 }}
+                >
                   /10
                 </Typography>
               </Typography>
@@ -303,7 +341,11 @@ const MovieDetails = () => {
               <Chip
                 label={usCert}
                 size="small"
-                sx={{ bgcolor: 'rgba(255,255,255,0.1)', color: '#e2e8f0', fontWeight: 800 }}
+                sx={{
+                  bgcolor: "rgba(255,255,255,0.1)",
+                  color: "#e2e8f0",
+                  fontWeight: 800,
+                }}
               />
             )}
           </Stack>
@@ -312,13 +354,13 @@ const MovieDetails = () => {
             sx={{
               fontFamily: '"Manrope", sans-serif',
               fontWeight: 900,
-              fontStyle: 'italic',
-              fontSize: { xs: '2rem', md: '3rem' },
+              fontStyle: "italic",
+              fontSize: { xs: "2rem", md: "3rem" },
               lineHeight: 1.05,
-              letterSpacing: '0.02em',
-              textTransform: 'uppercase',
-              color: '#fff',
-              textShadow: '0 4px 32px rgba(0,0,0,0.5)',
+              letterSpacing: "0.02em",
+              textTransform: "uppercase",
+              color: "#fff",
+              textShadow: "0 4px 32px rgba(0,0,0,0.5)",
               mb: 2,
             }}
           >
@@ -327,23 +369,25 @@ const MovieDetails = () => {
 
           <Typography
             sx={{
-              color: 'rgba(226, 232, 240, 0.92)',
+              color: "rgba(226, 232, 240, 0.92)",
               fontWeight: 600,
-              letterSpacing: '0.06em',
-              fontSize: '0.85rem',
+              letterSpacing: "0.06em",
+              fontSize: "0.85rem",
               mb: 3,
             }}
           >
             {year}
-            {runtimeMin != null ? ` • ${runtimeMin} ${t('movieDetail.min')}` : ''}
-            {genreMeta ? ` • ${genreMeta}` : ''}
+            {runtimeMin != null
+              ? ` • ${runtimeMin} ${t("movieDetail.min")}`
+              : ""}
+            {genreMeta ? ` • ${genreMeta}` : ""}
           </Typography>
 
           <Stack direction="row" flexWrap="wrap" gap={1.5}>
             <Button
-              component={trailerWatchUrl ? 'a' : 'button'}
+              component={trailerWatchUrl ? "a" : "button"}
               href={trailerWatchUrl ?? undefined}
-              target={trailerWatchUrl ? '_blank' : undefined}
+              target={trailerWatchUrl ? "_blank" : undefined}
               rel="noopener noreferrer"
               disabled={!trailerWatchUrl}
               variant="contained"
@@ -353,14 +397,14 @@ const MovieDetails = () => {
                 px: 3,
                 py: 1.25,
                 borderRadius: 2,
-                textTransform: 'none',
+                textTransform: "none",
                 fontWeight: 800,
                 bgcolor: layoutTokens.sidebar.accent,
-                boxShadow: '0 8px 24px rgba(59, 130, 246, 0.35)',
-                '&:hover': { bgcolor: '#2563eb' },
+                boxShadow: "0 8px 24px rgba(59, 130, 246, 0.35)",
+                "&:hover": { bgcolor: "#2563eb" },
               }}
             >
-              {t('movieDetail.watchTrailer')}
+              {t("movieDetail.watchTrailer")}
             </Button>
             <Button
               variant="contained"
@@ -371,24 +415,26 @@ const MovieDetails = () => {
                 px: 3,
                 py: 1.25,
                 borderRadius: 2,
-                textTransform: 'none',
+                textTransform: "none",
                 fontWeight: 800,
-                bgcolor: 'rgba(255,255,255,0.1)',
-                color: '#f8fafc',
-                '&:hover': { bgcolor: 'rgba(255,255,255,0.16)' },
+                bgcolor: "rgba(255,255,255,0.1)",
+                color: "#f8fafc",
+                "&:hover": { bgcolor: "rgba(255,255,255,0.16)" },
               }}
             >
-              {isFavorite ? t('movieDetail.inWatchlist') : t('movieDetail.watchlistShort')}
+              {isFavorite
+                ? t("movieDetail.inWatchlist")
+                : t("movieDetail.watchlistShort")}
             </Button>
             <IconButton
               onClick={handleShare}
               sx={{
-                bgcolor: 'rgba(255,255,255,0.1)',
-                color: '#f8fafc',
+                bgcolor: "rgba(255,255,255,0.1)",
+                color: "#f8fafc",
                 borderRadius: 2,
-                '&:hover': { bgcolor: 'rgba(255,255,255,0.16)' },
+                "&:hover": { bgcolor: "rgba(255,255,255,0.16)" },
               }}
-              aria-label={t('movieDetail.share')}
+              aria-label={t("movieDetail.share")}
             >
               <ShareOutlinedIcon />
             </IconButton>
@@ -396,7 +442,10 @@ const MovieDetails = () => {
         </Container>
       </Box>
 
-      <Container maxWidth="lg" sx={{ px: { xs: 2, md: 3 }, mt: { xs: -2, md: -3 } }}>
+      <Container
+        maxWidth="lg"
+        sx={{ px: { xs: 2, md: 3 }, mt: { xs: -2, md: -3 } }}
+      >
         <Grid container spacing={2.5}>
           <Grid size={{ xs: 12, md: 8 }}>
             <Paper
@@ -413,15 +462,21 @@ const MovieDetails = () => {
                 sx={{
                   color: movieDetailDark.accent,
                   fontWeight: 800,
-                  letterSpacing: '0.16em',
-                  display: 'block',
+                  letterSpacing: "0.16em",
+                  display: "block",
                   mb: 1.5,
                 }}
               >
-                {t('movieDetail.synopsis')}
+                {t("movieDetail.synopsis")}
               </Typography>
-              <Typography sx={{ color: 'rgba(226, 232, 240, 0.92)', lineHeight: 1.8, mb: 2 }}>
-                {movie.overview || t('movieDetail.noOverview')}
+              <Typography
+                sx={{
+                  color: "rgba(226, 232, 240, 0.92)",
+                  lineHeight: 1.8,
+                  mb: 2,
+                }}
+              >
+                {movie.overview || t("movieDetail.noOverview")}
               </Typography>
               <Stack direction="row" flexWrap="wrap" gap={1}>
                 {movie.genres?.map((g) => (
@@ -430,8 +485,8 @@ const MovieDetails = () => {
                     label={g.name}
                     size="small"
                     sx={{
-                      bgcolor: 'rgba(148, 163, 184, 0.12)',
-                      color: '#e2e8f0',
+                      bgcolor: "rgba(148, 163, 184, 0.12)",
+                      color: "#e2e8f0",
                       fontWeight: 600,
                       border: `1px solid ${movieDetailDark.border}`,
                     }}
@@ -449,7 +504,7 @@ const MovieDetails = () => {
                 borderRadius: 3,
                 bgcolor: movieDetailDark.surfaceElevated,
                 border: `1px solid ${movieDetailDark.border}`,
-                height: '100%',
+                height: "100%",
               }}
             >
               <Typography
@@ -457,24 +512,28 @@ const MovieDetails = () => {
                 sx={{
                   color: movieDetailDark.accent,
                   fontWeight: 800,
-                  letterSpacing: '0.12em',
-                  display: 'block',
+                  letterSpacing: "0.12em",
+                  display: "block",
                   mb: 2,
                 }}
               >
-                {t('movieDetail.directorWriting')}
+                {t("movieDetail.directorWriting")}
               </Typography>
               <Stack spacing={2}>
                 {directors.length > 0 && (
                   <Box>
                     <Typography
                       variant="caption"
-                      sx={{ color: 'rgba(148, 163, 184, 0.95)', letterSpacing: '0.1em', fontWeight: 800 }}
+                      sx={{
+                        color: "rgba(148, 163, 184, 0.95)",
+                        letterSpacing: "0.1em",
+                        fontWeight: 800,
+                      }}
                     >
-                      {t('movieDetail.directorsLabel')}
+                      {t("movieDetail.directorsLabel")}
                     </Typography>
-                    <Typography fontWeight={700} sx={{ color: '#f8fafc' }}>
-                      {directors.join(' & ')}
+                    <Typography fontWeight={700} sx={{ color: "#f8fafc" }}>
+                      {directors.join(" & ")}
                     </Typography>
                   </Box>
                 )}
@@ -482,12 +541,22 @@ const MovieDetails = () => {
                   <Box>
                     <Typography
                       variant="caption"
-                      sx={{ color: 'rgba(148, 163, 184, 0.95)', letterSpacing: '0.1em', fontWeight: 800 }}
+                      sx={{
+                        color: "rgba(148, 163, 184, 0.95)",
+                        letterSpacing: "0.1em",
+                        fontWeight: 800,
+                      }}
                     >
-                      {t('movieDetail.writersLabel')}
+                      {t("movieDetail.writersLabel")}
                     </Typography>
-                    <Typography fontWeight={600} sx={{ color: 'rgba(241, 245, 249, 0.95)', fontSize: '0.9rem' }}>
-                      {writers.join(', ')}
+                    <Typography
+                      fontWeight={600}
+                      sx={{
+                        color: "rgba(241, 245, 249, 0.95)",
+                        fontSize: "0.9rem",
+                      }}
+                    >
+                      {writers.join(", ")}
                     </Typography>
                   </Box>
                 )}
@@ -495,25 +564,47 @@ const MovieDetails = () => {
                   <Box>
                     <Typography
                       variant="caption"
-                      sx={{ color: 'rgba(148, 163, 184, 0.95)', letterSpacing: '0.1em', fontWeight: 800 }}
+                      sx={{
+                        color: "rgba(148, 163, 184, 0.95)",
+                        letterSpacing: "0.1em",
+                        fontWeight: 800,
+                      }}
                     >
-                      {t('movieDetail.studioLabel')}
+                      {t("movieDetail.studioLabel")}
                     </Typography>
-                    <Typography fontWeight={600} sx={{ color: '#f8fafc' }}>
+                    <Typography fontWeight={600} sx={{ color: "#f8fafc" }}>
                       {studioNames}
                     </Typography>
                   </Box>
                 )}
-                <Box sx={{ pt: 1, borderTop: `1px solid ${movieDetailDark.border}` }}>
+                <Box
+                  sx={{
+                    pt: 1,
+                    borderTop: `1px solid ${movieDetailDark.border}`,
+                  }}
+                >
                   <Typography variant="caption" color="text.secondary">
-                    {t('movieDetail.budget')}:{' '}
-                    <Typography component="span" fontWeight={700} color="inherit">
+                    {t("movieDetail.budget")}:{" "}
+                    <Typography
+                      component="span"
+                      fontWeight={700}
+                      color="inherit"
+                    >
                       {formatUsdCompact(movie.budget)}
                     </Typography>
                   </Typography>
-                  <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 0.5 }}>
-                    {t('movieDetail.revenue')}:{' '}
-                    <Typography component="span" fontWeight={700} sx={{ color: movieDetailDark.accent }}>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    display="block"
+                    sx={{ mt: 0.5 }}
+                  >
+                    {t("movieDetail.revenue")}:{" "}
+                    <Typography
+                      component="span"
+                      fontWeight={700}
+                      sx={{ color: movieDetailDark.accent }}
+                    >
                       {formatUsdCompact(movie.revenue)}
                     </Typography>
                   </Typography>
@@ -523,7 +614,7 @@ const MovieDetails = () => {
           </Grid>
         </Grid>
 
-        {(!usWatch || (!flatrate && !rent && !buy)) ? null : (
+        {!usWatch || (!flatrate && !rent && !buy) ? null : (
           <Paper
             elevation={0}
             sx={{
@@ -534,49 +625,67 @@ const MovieDetails = () => {
               border: `1px solid ${movieDetailDark.border}`,
             }}
           >
-            <Typography fontWeight={900} sx={{ mb: 2, fontFamily: '"Manrope", sans-serif' }}>
-              {t('movieDetail.whereToWatch')}
+            <Typography
+              fontWeight={900}
+              sx={{ mb: 2, fontFamily: '"Manrope", sans-serif' }}
+            >
+              {t("movieDetail.whereToWatch")}
             </Typography>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} flexWrap="wrap">
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={2}
+              flexWrap="wrap"
+            >
               {flatrate && (
                 <Stack direction="row" spacing={1} alignItems="center">
                   <Box
                     component="img"
-                    src={logoUrl(flatrate.logo_path, 'w45') ?? ''}
+                    src={logoUrl(flatrate.logo_path, "w45") ?? ""}
                     alt=""
                     sx={{ width: 36, height: 36, borderRadius: 1 }}
                   />
                   <Box>
-                    <Typography fontWeight={800}>{flatrate.provider_name}</Typography>
-                    <Typography variant="caption" sx={{ color: 'rgba(148, 163, 184, 0.95)' }}>
-                      {t('movieDetail.streamingSubscription')}
+                    <Typography fontWeight={800}>
+                      {flatrate.provider_name}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{ color: "rgba(148, 163, 184, 0.95)" }}
+                    >
+                      {t("movieDetail.streamingSubscription")}
                     </Typography>
                   </Box>
-                  <OpenInNewIcon sx={{ fontSize: 18, color: 'rgba(148, 163, 184, 0.8)' }} />
+                  <OpenInNewIcon
+                    sx={{ fontSize: 18, color: "rgba(148, 163, 184, 0.8)" }}
+                  />
                 </Stack>
               )}
               {rent && (
                 <Stack direction="row" spacing={1} alignItems="center">
                   <Box
                     component="img"
-                    src={logoUrl(rent.logo_path, 'w45') ?? ''}
+                    src={logoUrl(rent.logo_path, "w45") ?? ""}
                     alt=""
                     sx={{ width: 36, height: 36, borderRadius: 1 }}
                   />
                   <Typography fontWeight={700}>{rent.provider_name}</Typography>
-                  <ShoppingCartOutlinedIcon sx={{ fontSize: 18, color: 'rgba(148, 163, 184, 0.8)' }} />
+                  <ShoppingCartOutlinedIcon
+                    sx={{ fontSize: 18, color: "rgba(148, 163, 184, 0.8)" }}
+                  />
                 </Stack>
               )}
               {buy && (
                 <Stack direction="row" spacing={1} alignItems="center">
                   <Box
                     component="img"
-                    src={logoUrl(buy.logo_path, 'w45') ?? ''}
+                    src={logoUrl(buy.logo_path, "w45") ?? ""}
                     alt=""
                     sx={{ width: 36, height: 36, borderRadius: 1 }}
                   />
                   <Typography fontWeight={700}>{buy.provider_name}</Typography>
-                  <ShoppingCartOutlinedIcon sx={{ fontSize: 18, color: 'rgba(148, 163, 184, 0.8)' }} />
+                  <ShoppingCartOutlinedIcon
+                    sx={{ fontSize: 18, color: "rgba(148, 163, 184, 0.8)" }}
+                  />
                 </Stack>
               )}
             </Stack>
@@ -590,7 +699,7 @@ const MovieDetails = () => {
               limit={castLimit}
               showSubtitle={false}
               variant="dark"
-              headingOverride={t('movieDetail.topCast')}
+              headingOverride={t("movieDetail.topCast")}
               headerExtra={
                 showCastToggle ? (
                   <Button
@@ -598,11 +707,13 @@ const MovieDetails = () => {
                     onClick={() => setCastExpanded((e) => !e)}
                     sx={{
                       fontWeight: 800,
-                      textTransform: 'none',
+                      textTransform: "none",
                       color: movieDetailDark.accent,
                     }}
                   >
-                    {castExpanded ? t('movieDetail.viewLess') : t('movieDetail.viewAll')}
+                    {castExpanded
+                      ? t("movieDetail.viewLess")
+                      : t("movieDetail.viewAll")}
                   </Button>
                 ) : null
               }
@@ -619,41 +730,56 @@ const MovieDetails = () => {
                 borderRadius: 3,
                 bgcolor: movieDetailDark.surfaceElevated,
                 border: `1px solid ${movieDetailDark.border}`,
-                height: '100%',
+                height: "100%",
               }}
             >
-              <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={1}
+                sx={{ mb: 2 }}
+              >
                 <PushPinOutlinedIcon sx={{ color: movieDetailDark.accent }} />
                 <Typography
                   sx={{
                     color: movieDetailDark.accent,
                     fontWeight: 800,
-                    letterSpacing: '0.14em',
+                    letterSpacing: "0.14em",
                   }}
                 >
-                  {t('movieDetail.triviaHeading')}
+                  {t("movieDetail.triviaHeading")}
                 </Typography>
               </Stack>
               <Stack spacing={2}>
-                {(['movieDetail.trivia1', 'movieDetail.trivia2', 'movieDetail.trivia3'] as const).map(
-                  (key, i) => (
-                    <Box key={key} sx={{ display: 'flex', gap: 2 }}>
-                      <Typography
-                        sx={{
-                          color: 'rgba(148, 163, 184, 0.85)',
-                          fontWeight: 900,
-                          fontSize: '0.85rem',
-                          minWidth: 28,
-                        }}
-                      >
-                        {String(i + 1).padStart(2, '0')}
-                      </Typography>
-                      <Typography sx={{ color: 'rgba(226, 232, 240, 0.9)', lineHeight: 1.65, fontSize: '0.9rem' }}>
-                        {t(key)}
-                      </Typography>
-                    </Box>
-                  ),
-                )}
+                {(
+                  [
+                    "movieDetail.trivia1",
+                    "movieDetail.trivia2",
+                    "movieDetail.trivia3",
+                  ] as const
+                ).map((key, i) => (
+                  <Box key={key} sx={{ display: "flex", gap: 2 }}>
+                    <Typography
+                      sx={{
+                        color: "rgba(148, 163, 184, 0.85)",
+                        fontWeight: 900,
+                        fontSize: "0.85rem",
+                        minWidth: 28,
+                      }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: "rgba(226, 232, 240, 0.9)",
+                        lineHeight: 1.65,
+                        fontSize: "0.9rem",
+                      }}
+                    >
+                      {t(key)}
+                    </Typography>
+                  </Box>
+                ))}
               </Stack>
             </Paper>
           </Grid>
@@ -665,7 +791,7 @@ const MovieDetails = () => {
                 borderRadius: 3,
                 bgcolor: movieDetailDark.surfaceElevated,
                 border: `1px solid ${movieDetailDark.border}`,
-                height: '100%',
+                height: "100%",
               }}
             >
               <Typography
@@ -673,15 +799,21 @@ const MovieDetails = () => {
                 sx={{
                   color: movieDetailDark.accent,
                   fontWeight: 800,
-                  letterSpacing: '0.14em',
-                  display: 'block',
+                  letterSpacing: "0.14em",
+                  display: "block",
                   mb: 1,
                 }}
               >
-                {t('movieDetail.rateTitle')}
+                {t("movieDetail.rateTitle")}
               </Typography>
-              <Typography sx={{ color: 'rgba(148, 163, 184, 0.95)', mb: 2, fontSize: '0.9rem' }}>
-                {t('movieDetail.rateSubtitle')}
+              <Typography
+                sx={{
+                  color: "rgba(148, 163, 184, 0.95)",
+                  mb: 2,
+                  fontSize: "0.9rem",
+                }}
+              >
+                {t("movieDetail.rateSubtitle")}
               </Typography>
               <Rating
                 name="movie-user-rate"
@@ -691,7 +823,7 @@ const MovieDetails = () => {
                 onChange={(_, v) => setRatingDraft(v)}
                 sx={{
                   mb: 2,
-                  '& .MuiRating-iconFilled': { color: '#fbbf24' },
+                  "& .MuiRating-iconFilled": { color: "#fbbf24" },
                 }}
               />
               <Button
@@ -702,12 +834,14 @@ const MovieDetails = () => {
                   borderColor: movieDetailDark.accent,
                   color: movieDetailDark.accent,
                   fontWeight: 800,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                  '&:hover': { borderColor: '#7dd3fc', color: '#7dd3fc' },
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  "&:hover": { borderColor: "#7dd3fc", color: "#7dd3fc" },
                 }}
               >
-                {ratedLocked ? t('movieDetail.ratedThanks') : t('movieDetail.rateNow')}
+                {ratedLocked
+                  ? t("movieDetail.ratedThanks")
+                  : t("movieDetail.rateNow")}
               </Button>
             </Paper>
           </Grid>
@@ -719,22 +853,22 @@ const MovieDetails = () => {
               sx={{
                 fontFamily: '"Manrope", sans-serif',
                 fontWeight: 900,
-                fontStyle: 'italic',
-                fontSize: '1.25rem',
-                color: '#f8fafc',
+                fontStyle: "italic",
+                fontSize: "1.25rem",
+                color: "#f8fafc",
                 mb: 2,
               }}
             >
-              {t('movieDetail.youMightAlsoLike')}
+              {t("movieDetail.youMightAlsoLike")}
             </Typography>
             <Box
               sx={{
-                display: 'flex',
+                display: "flex",
                 gap: 2,
-                overflowX: 'auto',
+                overflowX: "auto",
                 pb: 1,
-                scrollbarWidth: 'thin',
-                '&::-webkit-scrollbar': { height: 6 },
+                scrollbarWidth: "thin",
+                "&::-webkit-scrollbar": { height: 6 },
               }}
             >
               {similarStrip.map((m) => (
@@ -743,28 +877,28 @@ const MovieDetails = () => {
                   component={Link}
                   to={`/movie/${m.id}`}
                   sx={{
-                    flex: '0 0 140px',
-                    textDecoration: 'none',
-                    color: 'inherit',
+                    flex: "0 0 140px",
+                    textDecoration: "none",
+                    color: "inherit",
                   }}
                 >
                   <Box
                     component="img"
-                    src={posterUrl(m.poster_path || null, 'w342')}
+                    src={posterUrl(m.poster_path || null, "w342")}
                     alt=""
                     sx={{
                       width: 140,
-                      aspectRatio: '2/3',
-                      objectFit: 'cover',
+                      aspectRatio: "2/3",
+                      objectFit: "cover",
                       borderRadius: 2,
-                      boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
+                      boxShadow: "0 8px 24px rgba(0,0,0,0.35)",
                       border: `1px solid ${movieDetailDark.border}`,
                     }}
                   />
                   <Typography
                     variant="caption"
                     fontWeight={700}
-                    sx={{ mt: 1, display: 'block', color: '#e2e8f0' }}
+                    sx={{ mt: 1, display: "block", color: "#e2e8f0" }}
                   >
                     {m.title}
                   </Typography>
