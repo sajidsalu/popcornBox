@@ -10,8 +10,9 @@ const WatchTrailerButton = ({ movieId }: { movieId: string }) => {
         retry: 1,
     });
 
+    type TrailerVideo = { site: string; type: string; key: string };
     const trailer = data.find(
-        (v: any) => v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser')
+        (v: TrailerVideo) => v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser')
     );
 
     const trailerUrl = trailer ? `https://www.youtube.com/watch?v=${trailer.key}` : null;

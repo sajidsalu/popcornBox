@@ -19,14 +19,17 @@ export const getAppTheme = (mode: 'light' | 'dark') => createTheme({
     palette: {
         mode,
         primary: {
-            main: mode === "dark" ? "#90caf9" : "#1976d2",
+            main: mode === "dark" ? "#60a5fa" : "#3B82F6",
         },
         background: {
-            default: mode === "dark" ? "#121212" : "#f5f5f5",
-            paper: mode === "dark" ? "#1e1e1e" : "#fff",
+            default: mode === "dark" ? "#0f172a" : "#F1F5F9",
+            paper: mode === "dark" ? "#1e293b" : "#ffffff",
         },
     },
     shape: {
-        borderRadius: 10,
-    }
+        borderRadius: 12,
+    },
+    typography: {
+        fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    },
 })
