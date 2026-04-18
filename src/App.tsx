@@ -1,28 +1,37 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import MovieDetails from "./pages/MovieDetails";
-import FavoritesPage from "./pages/FavoritesPage";
-import Header from "./components/Header";
-import { Box } from "@mui/material";
-import TvShowsPage from "./pages/TVShowsPage";
-import TvShowDetailsPage from "./pages/TVShowDetails";
+import TvHomePage from "./pages/home/TvHomePage";
+import MoviesHomePage from "./pages/movies/MoviesHomePage";
+import MovieDetails from "./pages/movies/MovieDetails";
+import FavoritesPage from "./pages/favorites/FavoritesPage";
+import TVShowsPage from "./pages/tv/TVShowsPage";
+import TVShowDetailsPage from "./pages/tv/tv-show-details/TVShowDetailsPage";
+import WatchPage from "./pages/watch/WatchPage";
+import AppShell from "./components/layout/AppShell";
+import SimplePlaceholderPage from "./pages/placeholder/SimplePlaceholderPage";
+import SearchPage from "./pages/search/SearchPage";
+import PersonPage from "./pages/person/PersonPage";
+import DiscoverPage from "./pages/discover/DiscoverPage";
 
 const App = () => {
   return (
     <BrowserRouter>
-      <Box sx={{ display: "flex", flex: 1, flexDirection: "column", minHeight: '100vh' }}>
-        <Header />
-        <Box>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/movie/:id" element={<MovieDetails />} />
-            <Route path="/favorites" element={<FavoritesPage />} />
-            <Route path="/tv" element={<TvShowsPage />} />
-            <Route path="/tv/:id" element={<TvShowDetailsPage />} />
-
-          </Routes>
-        </Box>
-      </Box>
+      <AppShell>
+        <Routes>
+          <Route path="/" element={<TvHomePage />} />
+          <Route path="/discover" element={<DiscoverPage />} />
+          <Route path="/movies" element={<MoviesHomePage />} />
+          <Route path="/movie/:id" element={<MovieDetails />} />
+          <Route path="/favorites" element={<FavoritesPage />} />
+          <Route path="/tv" element={<TVShowsPage />} />
+          <Route path="/tv/:id" element={<TVShowDetailsPage />} />
+          <Route path="/watch" element={<WatchPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/person/:id" element={<PersonPage />} />
+          <Route path="/stats" element={<SimplePlaceholderPage titleKey="placeholder.stats" />} />
+          <Route path="/history" element={<SimplePlaceholderPage titleKey="placeholder.history" />} />
+          <Route path="/friends" element={<SimplePlaceholderPage titleKey="placeholder.friends" />} />
+        </Routes>
+      </AppShell>
     </BrowserRouter>
   );
 };

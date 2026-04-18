@@ -1,19 +1,12 @@
 import { Card, CardMedia, CardContent, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import type { TVShow } from '../types/show.type';
 
-export type TVShow = {
-    id: number;
-    original_name: string;
-    vote_count: number;
-    poster_path: string;
-    first_air_date?: string;
-    original_language: string;
-    vote_average: number;
-};
+export type { TVShow };
 
 interface Props {
     show: TVShow;
-};
+}
 
 const TVShowCard = ({ show }: Props) => {
     const imageUrl = show.poster_path
